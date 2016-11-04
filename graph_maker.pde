@@ -7,10 +7,15 @@ ControlP5 plus, sub, mul, div, del, variable;
 ControlP5 one, two, three, four, five;
 ControlP5[] tab = new ControlP5[3];
 int window_h, tab_height = 40, tab_num = 3;  //tab_height変更時、size()も変更すること
-color[] func_color = new color[4];
-int FUNK_NUM = 4;
-String[] func = {"", "default2", "default3", "default4"};
-String[] tab_name = {"function", "edit", "graph"};
+
+int LIST = 0;
+int EDIT = 1;
+int GRAPH = 2;
+String[] tab_name = {"list", "edit", "graph"};
+
+int FUNC_NUM = 4;
+Function[] func = new Function[FUNC_NUM];
+
 
 int tab_now = 0;
 int edit_now = 0;
@@ -21,26 +26,24 @@ int grid_y = 1; int grid_x = 1;
 
 void setup(){
   smooth();
-  size(840, 600); //tab_heightを変更したらここも変更すること
+  size(800, 640); //tab_heightを変更したらここも変更すること
   window_h = height - tab_height;
   ratio_x = width / ( range_x * 2 );
   ratio_y = window_h / ( range_y * 2 );
-  func_color[0] = #FF0000;
-  func_color[1] = #00FF00;
-  func_color[2] = #0000FF;
-  func_color[3] = #00EFEF;
+  
   SetTub();
+  SetFunction();
   Flush();
 }
 
-float vs(float t){
-  return cos( 50 * t ) + 1;
-}
-float vc(float t){
-  return cos(1000 * t);
-}
-float va(float t){
-  return vs(t) * vc(t);
+void SetFunction(){
+  for(int i=0; i<FUNC_NUM; i++){
+    func[i] = new Function();
+  }
+  func[0].c = #FF0000;
+  func[1].c = #00FF00;
+  func[2].c = #0000FF;
+  func[3].c = #00EFEF;
 }
 
 void draw(){
@@ -48,27 +51,35 @@ void draw(){
     case 0:
       //関数一覧
       Flush();
-      for(int i=0; i<FUNK_NUM; i++){
-        fill(func_color[i]);
-        text("f" + Integer.toString(i+1) + "(x) = " + func[i], 100, 300+(i*50));
+      for(int i=0; i<FUNC_NUM; i++){
+        fill(250);
+        rect( 0, window_h/FUNC_NUM*i, width, window_h/FUNC_NUM*(i+1));
+        fill(func[i].c);
+        textSize(30);
+        text("f" + Integer.toString(i+1) + "(x) = " + func[i].formula, 100, window_h/FUNC_NUM/2*(i*2+1));
+        fill(200);
+        rect(650, window_h/FUNC_NUM*i+50, 100, 50);
+        fill(0);
+        text("edit", 670, window_h/FUNC_NUM*i+85);
       }
       break;
     case 1:
       //関数編集
       Flush();
-      DrawButtons();
+      fill(0);
+      rect(50, 50, 700, 70);
+      
       break;
     case 2:
       //関数描画
       Flush();
       break;
-      
   }
 }
 
 void Flush(){
   background(255);
-  SetTub();
+  //SetTub();
 }
 
 void DrawGrids(){
@@ -84,15 +95,13 @@ void DrawGrids(){
   line(width/2, 0, width/2, window_h);   //draw axis y
   
 }
+
 void DrawGraph(){
   tab_now = 2;
   Flush();
-  stroke(color(255, 0, 0));
-  for(float i=-range_x; i<range_x; i+=0.00001)
-    point(i*ratio_x + width/2, -vs(i)*ratio_y + window_h/2);
-  stroke(color(0, 80, 200));
-  for(float i=-range_x; i<range_x; i+=0.00001)
-    point(i*ratio_x + width/2, -va(i)*ratio_y + window_h/2);
+  //stroke(color(255, 0, 0));
+  //for(float i=-range_x; i<range_x; i+=0.00001)
+  //  point(i*ratio_x + width/2, -vs(i)*ratio_y + window_h/2);
 }
 
 void SetTub(){
@@ -120,55 +129,32 @@ void tab2(){
 }
 
 void DrawButtons(){
-  b_draw = new ControlP5(this);
-  b_draw.addButton("DrawGraph")
-    .setLabel("draw")
-    .setPosition(50, 40)
-    .setSize(40, 40);
-    
-  b_flush = new ControlP5(this);
-  b_flush.addButton("Flush")
-    .setLabel("reset")
-    .setPosition(100, 40)
-    .setSize(40, 40);
-  
-  plus = new ControlP5(this);
-  plus.addButton("Plus")
-    .setLabel("+")
-    .setPosition(150, 40)
-    .setSize(40, 40);
-    
-  one = new ControlP5(this);
-  one.addButton("One")
-    .setLabel("1")
-    .setPosition(200, 40)
-    .setSize(40, 40);
-
-  del = new ControlP5(this);
-  del.addButton("Del")
-    .setLabel("del")
-    .setPosition(250, 40)
-    .setSize(40, 40);
-    
-  variable = new ControlP5(this);
-  variable.addButton("Variable")
-    .setLabel("X")
-    .setPosition(300, 40)
-    .setSize(40, 40);
+  //ここにボタン記述する
 }
 
 void Plus(){
-  func[edit_now - 1] += " +";
+  func[edit_now].formula += " +";
 }
 
 void One(){
-  func[edit_now - 1 ] += " 1";
+  func[edit_now].formula += " 1";
 }
 
 void Del(){
-  func[edit_now - 1] = func[edit_now - 1].substring(0,func[edit_now - 1].length()-2);
+  //func[edit_now] = func[edit_now].formula.substring(0,func[edit_now].formula.length()-2);
 }
 
 void Variable(){
-  func[edit_now - 1 ] += " x";
+  func[edit_now].formula += " x";
+}
+
+void mousePressed(){
+  if(mouseX >= 650 && mouseX <= 750){
+    for(int i=0; i<FUNC_NUM; i++){
+      if(mouseY >= window_h/FUNC_NUM*i+50 && mouseY <=window_h/FUNC_NUM*i+100){
+        edit_now = i;
+        tab_now = EDIT;
+      }
+    }
+  } 
 }
