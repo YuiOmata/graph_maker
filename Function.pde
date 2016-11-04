@@ -1,14 +1,17 @@
 
 class Function{
   String formula;
+  int number;
   color c;
-  boolean efective = true;
+  boolean efective;
   
-  Function(){
+  Function(int number){
     this.formula = "0";
+    this.number = number;
+    this.efective = true;
   }
   
-  //void setFormula(String formula){
-  //  this.formula = formula;
-  //}
+  void printFunction(int x,int y){
+    text("f" + Integer.toString(number) + "(x) = " + this.formula, x, y);
+  }
 }

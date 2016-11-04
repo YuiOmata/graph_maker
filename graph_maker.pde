@@ -38,7 +38,7 @@ void setup(){
 
 void SetFunction(){
   for(int i=0; i<FUNC_NUM; i++){
-    func[i] = new Function();
+    func[i] = new Function(i+1);
   }
   func[0].c = #FF0000;
   func[1].c = #00FF00;
@@ -48,30 +48,28 @@ void SetFunction(){
 
 void draw(){
   switch(tab_now){
-    case 0:
-      //関数一覧
+    case 0:  //関数一覧
       Flush();
       for(int i=0; i<FUNC_NUM; i++){
         fill(250);
         rect( 0, window_h/FUNC_NUM*i, width, window_h/FUNC_NUM*(i+1));
         fill(func[i].c);
         textSize(30);
-        text("f" + Integer.toString(i+1) + "(x) = " + func[i].formula, 100, window_h/FUNC_NUM/2*(i*2+1));
+        func[i].printFunction(100, window_h/FUNC_NUM/2*(i*2+1));
         fill(200);
         rect(650, window_h/FUNC_NUM*i+50, 100, 50);
         fill(0);
         text("edit", 670, window_h/FUNC_NUM*i+85);
       }
       break;
-    case 1:
-      //関数編集
+    case 1:  //関数編集
       Flush();
       fill(0);
       rect(50, 50, 700, 70);
-      
+      fill(func[edit_now].c);
+      func[edit_now].printFunction(100, 85);
       break;
-    case 2:
-      //関数描画
+    case 2:  //関数描画
       Flush();
       break;
   }
@@ -79,7 +77,6 @@ void draw(){
 
 void Flush(){
   background(255);
-  //SetTub();
 }
 
 void DrawGrids(){
