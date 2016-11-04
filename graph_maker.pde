@@ -5,10 +5,13 @@ import java.awt.*;
 ControlP5 b_draw, b_flush;
 ControlP5 plus, sub, mul, div, del, variable;
 ControlP5 one, two, three, four, five;
+int window_h, tab_height = 40, tab_num = 3;  //tab_height変更時、size()も変更すること
 color[] func_color = new color[4];
 int FUNK_NUM = 4;
 String[] func = {"", "default2", "default3", "default4"};
-int edit_now = 1, tag = 1;
+
+int tab_now = 1;
+int edit_now = 1;
 
 float ratio_x, ratio_y;
 float range_x = 0.2, range_y = 4;
@@ -16,9 +19,10 @@ int grid_y = 1; int grid_x = 1;
 
 void setup(){
   smooth();
-  size(800, 600); /*表示ウィンドウのサイズ変えたかったここ弄ってね（横px、 縦px）：default size(800, 600)*/
+  size(840, 600); //tab_heightを変更したらここも変更すること
+  window_h = height - tab_height;
   ratio_x = width / ( range_x * 2 );
-  ratio_y = height / ( range_y * 2 );
+  ratio_y = window_h / ( range_y * 2 );
   SetButtons();
   func_color[0] = #FF0000;
   func_color[1] = #00FF00;
@@ -39,8 +43,9 @@ float va(float t){
 }
 
 void draw(){
-  switch(tag){
+  switch(tab_now){
     case 1:
+      //関数一覧
       Flush();
       for(int i=0; i<FUNK_NUM; i++){
         fill(func_color[edit_now - 1 + i]);
@@ -48,8 +53,16 @@ void draw(){
       }
       break;
     case 2:
+      //関数編集
+      
       break;
+    case 3:
+      //関数描画
+      
+      break;
+      
   }
+  DrawTab();
 }
 
 void Flush(){
@@ -60,25 +73,32 @@ void Flush(){
 void DrawGrids(){
   strokeWeight(0.1);
   stroke(color(0, 200, 0));
-  for(int i=0; i<height; i+=int(height/(range_y*2)*grid_y))
+  for(int i=0; i<window_h; i+=int(window_h/(range_y*2)*grid_y))
     line(0, i, width, i);
   for(int i=0; i<width; i+=int(width/(range_x*2)*grid_x))
     line(i, 0, i, width);
   strokeWeight(1);
   stroke(0);
-  line(0, height/2, width, height/2);  //draw axis x　
-  line(width/2, 0, width/2, height);   //draw axis y
+  line(0, window_h/2, width, window_h/2);  //draw axis x　
+  line(width/2, 0, width/2, window_h);   //draw axis y
   
 }
 void DrawGraph(){
-  tag = 2;
+  tab_now = 2;
   Flush();
   stroke(color(255, 0, 0));
   for(float i=-range_x; i<range_x; i+=0.00001)
-    point(i*ratio_x + width/2, -vs(i)*ratio_y + height/2);
+    point(i*ratio_x + width/2, -vs(i)*ratio_y + window_h/2);
   stroke(color(0, 80, 200));
   for(float i=-range_x; i<range_x; i+=0.00001)
-    point(i*ratio_x + width/2, -va(i)*ratio_y + height/2);
+    point(i*ratio_x + width/2, -va(i)*ratio_y + window_h/2);
+}
+
+void DrawTab(){
+  int tab_width = width / tab_num;
+  for(int i=0; i<tab_num; i++){
+    rect(tab_width*i, window_h, tab_width*(i+1),height);
+  }
 }
 
 void SetButtons(){
