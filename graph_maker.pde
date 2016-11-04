@@ -5,13 +5,15 @@ import java.awt.*;
 ControlP5 b_draw, b_flush;
 ControlP5 plus, sub, mul, div, del, variable;
 ControlP5 one, two, three, four, five;
+ControlP5[] tab = new ControlP5[3];
 int window_h, tab_height = 40, tab_num = 3;  //tab_height変更時、size()も変更すること
 color[] func_color = new color[4];
 int FUNK_NUM = 4;
 String[] func = {"", "default2", "default3", "default4"};
+String[] tab_name = {"function", "edit", "graph"};
 
-int tab_now = 1;
-int edit_now = 1;
+int tab_now = 0;
+int edit_now = 0;
 
 float ratio_x, ratio_y;
 float range_x = 0.2, range_y = 4;
@@ -23,12 +25,11 @@ void setup(){
   window_h = height - tab_height;
   ratio_x = width / ( range_x * 2 );
   ratio_y = window_h / ( range_y * 2 );
-  SetButtons();
   func_color[0] = #FF0000;
   func_color[1] = #00FF00;
   func_color[2] = #0000FF;
   func_color[3] = #00EFEF;
-  
+  SetTub();
   Flush();
 }
 
@@ -44,30 +45,30 @@ float va(float t){
 
 void draw(){
   switch(tab_now){
-    case 1:
+    case 0:
       //関数一覧
       Flush();
       for(int i=0; i<FUNK_NUM; i++){
-        fill(func_color[edit_now - 1 + i]);
-        text("f" + Integer.toString(i+1) + "(x) = " + func[edit_now - 1 + i], 100, 300+(i*50));
+        fill(func_color[i]);
+        text("f" + Integer.toString(i+1) + "(x) = " + func[i], 100, 300+(i*50));
       }
       break;
-    case 2:
+    case 1:
       //関数編集
-      
+      Flush();
+      DrawButtons();
       break;
-    case 3:
+    case 2:
       //関数描画
-      
+      Flush();
       break;
       
   }
-  DrawTab();
 }
 
 void Flush(){
   background(255);
-  DrawGrids();
+  SetTub();
 }
 
 void DrawGrids(){
@@ -94,14 +95,31 @@ void DrawGraph(){
     point(i*ratio_x + width/2, -va(i)*ratio_y + window_h/2);
 }
 
-void DrawTab(){
+void SetTub(){
   int tab_width = width / tab_num;
   for(int i=0; i<tab_num; i++){
-    rect(tab_width*i, window_h, tab_width*(i+1),height);
+    tab[i] = new ControlP5(this);
+    tab[i].addButton("tab" + i)
+      .setLabel(tab_name[i])
+      .setPosition(tab_width*i, window_h)
+      .setSize(tab_width, tab_height);
+    //rect(tab_width*i, window_h, tab_width*(i+1),height);
   }
 }
 
-void SetButtons(){
+void tab0(){
+  tab_now = 0;
+}
+
+void tab1(){
+  tab_now = 1;
+}
+
+void tab2(){
+  tab_now = 2;
+}
+
+void DrawButtons(){
   b_draw = new ControlP5(this);
   b_draw.addButton("DrawGraph")
     .setLabel("draw")
