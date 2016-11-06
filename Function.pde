@@ -3,12 +3,12 @@ class Function{
   String formula;
   int number;
   color c;
-  boolean efective;
+  boolean effective;
   
   Function(int number){
     this.formula = "0";
     this.number = number;
-    this.efective = true;
+    this.effective = true;
   }
   
   void printFunction(int x,int y){

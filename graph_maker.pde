@@ -60,6 +60,18 @@ void draw(){
         rect(650, window_h/FUNC_NUM*i+50, 100, 50);
         fill(0);
         text("edit", 670, window_h/FUNC_NUM*i+85);
+        if(func[i].effective){
+          fill(#44EE99);
+          rect(550, window_h/FUNC_NUM*i+50, 50, 50);
+          fill(0);
+          text("on", 555, window_h/FUNC_NUM*i+85);
+        }
+        else{
+          fill(200);
+          rect(550, window_h/FUNC_NUM*i+50, 50, 50);
+          fill(0);
+          text("off", 555, window_h/FUNC_NUM*i+85);
+        }
       }
       break;
     case 1:  //関数編集
@@ -70,7 +82,8 @@ void draw(){
       func[edit_now].printFunction(100, 85);
       break;
     case 2:  //関数描画
-      Flush();
+      DrawGrids();
+      DrawGraph();
       break;
   }
 }
@@ -80,6 +93,7 @@ void Flush(){
 }
 
 void DrawGrids(){
+  Flush();
   strokeWeight(0.1);
   stroke(color(0, 200, 0));
   for(int i=0; i<window_h; i+=int(window_h/(range_y*2)*grid_y))
@@ -90,15 +104,13 @@ void DrawGrids(){
   stroke(0);
   line(0, window_h/2, width, window_h/2);  //draw axis x　
   line(width/2, 0, width/2, window_h);   //draw axis y
-  
 }
 
 void DrawGraph(){
   tab_now = 2;
-  Flush();
-  //stroke(color(255, 0, 0));
-  //for(float i=-range_x; i<range_x; i+=0.00001)
-  //  point(i*ratio_x + width/2, -vs(i)*ratio_y + window_h/2);
+  stroke(color(255, 0, 0));
+  for(float i=-range_x; i<range_x; i+=0.00001)
+    point(i*ratio_x + width/2, -cos(i*1000)*ratio_y + window_h/2);
 }
 
 void SetTub(){
@@ -114,14 +126,17 @@ void SetTub(){
 }
 
 void tab0(){
+  Flush();
   tab_now = 0;
 }
 
 void tab1(){
+  Flush();
   tab_now = 1;
 }
 
 void tab2(){
+  Flush();
   tab_now = 2;
 }
 
@@ -149,8 +164,16 @@ void mousePressed(){
   if(mouseX >= 650 && mouseX <= 750){
     for(int i=0; i<FUNC_NUM; i++){
       if(mouseY >= window_h/FUNC_NUM*i+50 && mouseY <=window_h/FUNC_NUM*i+100){
+        Flush();
         edit_now = i;
         tab_now = EDIT;
+      }
+    }
+  }
+  if(mouseX >= 550 && mouseX <= 600){
+    for(int i=0; i<FUNC_NUM; i++){
+      if(mouseY >= window_h/FUNC_NUM*i+50 && mouseY <=window_h/FUNC_NUM*i+100){
+        func[i].effective = !func[i].effective;
       }
     }
   } 
