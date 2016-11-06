@@ -12,10 +12,12 @@ int LIST = 0;
 int EDIT = 1;
 int GRAPH = 2;
 String[] tab_name = {"list", "edit", "graph"};
-
-int FUNC_NUM = 4;
-Function[] func = new Function[FUNC_NUM];
-
+String[][] Buttons = {
+  {"ac", "del", "+", "7", "8", "9"},
+  {"root", "hat", "-", "4", "5", "6"},
+  {"pi", "e", "*", "1", "2", "3"},
+  {"(", ")", "/", "0", ".", "save"},
+};
 
 int tab_now = 0;
 int edit_now = 0;
@@ -23,6 +25,9 @@ int edit_now = 0;
 float ratio_x, ratio_y;
 float range_x = 0.2, range_y = 4;
 int grid_y = 1; int grid_x = 1;
+
+int FUNC_NUM = 4;
+Function[] func = new Function[FUNC_NUM];
 
 void setup(){
   smooth();
@@ -80,10 +85,16 @@ void draw(){
       rect(50, 50, 700, 70);
       fill(func[edit_now].c);
       func[edit_now].printFunction(100, 85);
+      for(int i=0; i<Buttons.length; i++){
+        for(int j=0; j<int(Buttons[].length); j++){
+        }
+      }
       break;
     case 2:  //関数描画
       DrawGrids();
       DrawGraph();
+      break;
+    default :
       break;
   }
 }
@@ -125,6 +136,10 @@ void SetTub(){
   }
 }
 
+void setButton(){
+
+}
+
 void tab0(){
   Flush();
   tab_now = 0;
@@ -161,20 +176,30 @@ void Variable(){
 }
 
 void mousePressed(){
-  if(mouseX >= 650 && mouseX <= 750){
-    for(int i=0; i<FUNC_NUM; i++){
-      if(mouseY >= window_h/FUNC_NUM*i+50 && mouseY <=window_h/FUNC_NUM*i+100){
-        Flush();
-        edit_now = i;
-        tab_now = EDIT;
+  switch(tab_now){
+    case 0:  //関数一覧
+      if(mouseX >= 650 && mouseX <= 750){
+        for(int i=0; i<FUNC_NUM; i++){
+          if(mouseY >= window_h/FUNC_NUM*i+50 && mouseY <=window_h/FUNC_NUM*i+100){
+            Flush();
+            edit_now = i;
+            tab_now = EDIT;
+          }
+        }
       }
-    }
+      if(mouseX >= 550 && mouseX <= 600){
+        for(int i=0; i<FUNC_NUM; i++){
+          if(mouseY >= window_h/FUNC_NUM*i+50 && mouseY <=window_h/FUNC_NUM*i+100){
+            func[i].effective = !func[i].effective;
+          }
+        }
+      }
+      break ;
+    case 1:  //関数編集
+      break;
+    case 2:  //関数描画
+      break;
+    default :
+      break;      
   }
-  if(mouseX >= 550 && mouseX <= 600){
-    for(int i=0; i<FUNC_NUM; i++){
-      if(mouseY >= window_h/FUNC_NUM*i+50 && mouseY <=window_h/FUNC_NUM*i+100){
-        func[i].effective = !func[i].effective;
-      }
-    }
-  } 
 }
